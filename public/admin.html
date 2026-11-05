@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Innovexa Admin Panel</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+    :root {
+      --bg: #060914;
+      --panel: #0b1220;
+      --panel2: #0f1829;
+      --panel3: #121e31;
+      --line: rgba(155, 177, 215, .13);
+      --line2: rgba(87, 168, 255, .24);
+      --text: #edf4ff;
+      --muted: #8190a8;
+      --blue: #4c8dff;
+      --cyan: #43d9df;
+      --green: #37d69b;
+      --yellow: #f7c65b;
+      --red: #ff6678;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .35);
+      --radius: 18px
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 80% -10%, rgba(67, 217, 223, .09), transparent 28%), radial-gradient(circle at 10% 10%, rgba(76, 141, 255, .12), transparent 30%), var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', Arial, sans-serif;
+      min-height: 100vh
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit
+    }
+
+    button {
+      cursor: pointer
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit
+    }
+
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .25;
+      background-image: linear-gradient(rgba(120, 150, 190, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(120, 150, 190, .035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, #000, transparent 80%)
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      min-height: 100vh
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 250px;
+      padding: 24px 16px;
+      background: rgba(7, 11, 20, .9);
+      backdrop-filter: blur(22px);
+      border-right: 1px solid var(--line);
+      z-index: 30
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 6px 10px 28px
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #031019;
+      font-weight: 800;
+      box-shadow: 0 8px 28px rgba(67, 217, 223, .18)
+    }
+
+    .brand strong {
+      font: 700 1rem 'Space Grotesk'
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: .68rem;
+      margin-top: 2px
+    }
+
+    .nav-title {
+      font-size: .62rem;
+      color: #52617a;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      padding: 0 12px 9px
+    }
+
+    .side-nav {
+      display: grid;
+      gap: 5px
+    }
+
+    .side-nav button {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      padding: 12px 13px;
+      border-radius: 12px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      transition: .2s
+    }
+
+    .side-nav button:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, .03)
+    }
+
+    .side-nav button.active {
+      color: #fff;
+      background: linear-gradient(90deg, rgba(76, 141, 255, .15), rgba(67, 217, 223, .06));
+      border-color: var(--line2);
+      box-shadow: inset 3px 0 0 var(--cyan)
+    }
+
+    .ico {
+      width: 18px;
+      text-align: center;
+      color: var(--cyan);
+      font-size: .95rem
+    }
+
+    .side-bottom {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 20px
+    }
+
+    .system {
+      padding: 13px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .025);
+      border-radius: 14px
+    }
+
+    .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--green);
+      margin-right: 7px
+    }
+
+    .system small {
+      color: var(--muted);
+      font-size: .68rem
+    }
+
+    .main {
+      grid-column: 2;
+      padding: 0 32px 50px;
+      min-width: 0
+    }
+
+    .topbar {
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      background: rgba(6, 9, 20, .75);
+      backdrop-filter: blur(18px);
+      z-index: 20
+    }
+
+    .crumb {
+      color: var(--muted);
+      font-size: .78rem
+    }
+
+    .crumb b {
+      color: #fff
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .icon-btn,
+    .profile,
+    .refresh-btn {
+      height: 40px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .035);
+      color: var(--muted);
+      border-radius: 11px;
+      padding: 0 13px
+    }
+
+    .refresh-btn:hover,
+    .icon-btn:hover {
+      border-color: var(--line2);
+      color: #fff
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #fff
+    }
+
+    .avatar {
+      width: 27px;
+      height: 27px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #263b65, #18263f);
+      font-size: .68rem;
+      font-weight: 700
+    }
+
+    .page-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      padding: 34px 0 24px
+    }
+
+    .page-head h1 {
+      font: 700 clamp(1.8rem, 3vw, 2.5rem) 'Space Grotesk';
+      margin: 0;
+      letter-spacing: -.04em
+    }
+
+    .page-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: .9rem
+    }
+
+    .head-right {
+      text-align: right
+    }
+
+    .live {
+      font-size: .68rem;
+      color: var(--green);
+      margin-bottom: 6px
+    }
+
+    .updated {
+      font-size: .7rem;
+      color: var(--muted)
+    }
+
+    .view {
+      display: none
+    }
+
+    .view.active {
+      display: block
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px
+    }
+
+    .stat {
+      padding: 19px;
+      background: linear-gradient(145deg, rgba(17, 29, 48, .95), rgba(10, 17, 30, .95));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .stat:after {
+      content: '';
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      right: -35px;
+      top: -35px;
+      border-radius: 50%;
+      background: rgba(76, 141, 255, .09);
+      filter: blur(4px)
+    }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .08em
+    }
+
+    .stat-icon {
+      color: var(--cyan)
+    }
+
+    .stat-num {
+      font: 700 1.7rem 'Space Grotesk';
+      margin-top: 14px
+    }
+
+    .stat-foot {
+      font-size: .68rem;
+      color: var(--muted);
+      margin-top: 6px
+    }
+
+    .stat-foot.green {
+      color: var(--green)
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(290px, .9fr);
+      gap: 16px;
+      margin-top: 16px
+    }
+
+    .card {
+      background: rgba(11, 18, 32, .9);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow)
+    }
+
+    .card-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px
+    }
+
+    .card-head h2 {
+      font: 600 1rem 'Space Grotesk';
+      margin: 0
+    }
+
+    .card-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: .7rem
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .search {
+      width: 220px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #080e1a;
+      color: #fff;
+      outline: none
+    }
+
+    .search:focus {
+      border-color: var(--blue)
+    }
+
+    .select {
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #080e1a;
+      color: #b9c6d9;
+      outline: none
+    }
+
+    .table-wrap {
+      overflow: auto
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 850px
+    }
+
+    .table th,
+    .table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle
+    }
+
+    .table th {
+      font-size: .62rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: #60708a
+    }
+
+    .table td {
+      font-size: .78rem;
+      color: #c8d3e2
+    }
+
+    .table tr:hover td {
+      background: rgba(255, 255, 255, .018)
+    }
+
+    .client {
+      display: flex;
+      gap: 10px;
+      align-items: center
+    }
+
+    .client-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #172d50, #102034);
+      display: grid;
+      place-items: center;
+      color: var(--cyan);
+      font-weight: 700;
+      font-size: .68rem
+    }
+
+    .client strong {
+      display: block;
+      color: #fff;
+      font-size: .78rem
+    }
+
+    .client small,
+    .sub {
+      display: block;
+      color: var(--muted);
+      font-size: .66rem;
+      margin-top: 3px
+    }
+
+    .service {
+      color: #fff
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: .63rem;
+      font-weight: 700;
+      text-transform: capitalize;
+      border: 1px solid transparent
+    }
+
+    .badge:before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor
+    }
+
+    .badge.pending,
+    .badge.submitted {
+      color: var(--yellow);
+      background: rgba(247, 198, 91, .08);
+      border-color: rgba(247, 198, 91, .16)
+    }
+
+    .badge.approved,
+    .badge.paid {
+      color: var(--green);
+      background: rgba(55, 214, 155, .08);
+      border-color: rgba(55, 214, 155, .16)
+    }
+
+    .badge.completed {
+      color: var(--blue);
+      background: rgba(76, 141, 255, .08);
+      border-color: rgba(76, 141, 255, .16)
+    }
+
+    .badge.rejected {
+      color: var(--red);
+      background: rgba(255, 102, 120, .08);
+      border-color: rgba(255, 102, 120, .16)
+    }
+
+    .badge.unpaid {
+      color: #8795ab;
+      background: rgba(135, 149, 171, .08);
+      border-color: rgba(135, 149, 171, .15)
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .035);
+      color: #b9c6d9;
+      padding: 7px 9px;
+      border-radius: 9px;
+      font-size: .65rem;
+      font-weight: 600
+    }
+
+    .btn:hover {
+      border-color: var(--line2);
+      color: #fff
+    }
+
+    .btn.primary {
+      background: linear-gradient(100deg, var(--blue), var(--cyan));
+      color: #04101a;
+      border: none
+    }
+
+    .btn.danger {
+      color: #ff91a0;
+      border-color: rgba(255, 102, 120, .2)
+    }
+
+    .panel-body {
+      padding: 20px
+    }
+
+    .bar-row {
+      margin: 0 0 17px
+    }
+
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .7rem;
+      margin-bottom: 7px;
+      color: #b7c3d5
+    }
+
+    .bar-label span:last-child {
+      color: var(--muted)
+    }
+
+    .bar {
+      height: 7px;
+      border-radius: 10px;
+      background: #172235;
+      overflow: hidden
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--cyan))
+    }
+
+    .activity {
+      display: grid;
+      gap: 16px
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 11px
+    }
+
+    .activity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      margin-top: 5px;
+      box-shadow: 0 0 12px rgba(67, 217, 223, .45);
+      flex: 0 0 auto
+    }
+
+    .activity-item strong {
+      font-size: .74rem;
+      color: #e7eef9
+    }
+
+    .activity-item p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: .67rem;
+      line-height: 1.45
+    }
+
+    .activity-item time {
+      color: #52617a;
+      font-size: .61rem
+    }
+
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 15px;
+      padding: 20px
+    }
+
+    .project {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: #0a111e;
+      transition: .25s
+    }
+
+    .project:hover {
+      transform: translateY(-3px);
+      border-color: var(--line2)
+    }
+
+    .project-img {
+      height: 155px;
+      background: linear-gradient(135deg, #101d31, #07101d);
+      position: relative;
+      overflow: hidden
+    }
+
+    .project-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: .88
+    }
+
+    .project-status {
+      position: absolute;
+      top: 10px;
+      right: 10px
+    }
+
+    .project-body {
+      padding: 15px
+    }
+
+    .project-cat {
+      color: var(--cyan);
+      font-size: .61rem;
+      text-transform: uppercase;
+      letter-spacing: .1em
+    }
+
+    .project h3 {
+      font: 600 1rem 'Space Grotesk';
+      margin: 7px 0
+    }
+
+    .project p {
+      font-size: .7rem;
+      line-height: 1.5;
+      color: var(--muted);
+      min-height: 32px
+    }
+
+    .project-actions {
+      display: flex;
+      gap: 7px;
+      margin-top: 13px
+    }
+
+    .form-card {
+      padding: 20px
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px
+    }
+
+    .field label {
+      display: block;
+      color: #7d8da6;
+      font-size: .65rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin: 0 0 7px
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      background: #080e19;
+      color: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 12px;
+      outline: none
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--blue)
+    }
+
+    .field textarea {
+      min-height: 105px;
+      resize: vertical
+    }
+
+    .full {
+      grid-column: 1/-1
+    }
+
+    .check {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: .7rem;
+      margin: 14px 0
+    }
+
+    .check input {
+      accent-color: var(--cyan)
+    }
+
+    .empty {
+      padding: 60px;
+      text-align: center;
+      color: var(--muted);
+      font-size: .8rem
+    }
+
+    .empty strong {
+      display: block;
+      color: #fff;
+      font: 600 1rem 'Space Grotesk';
+      margin-bottom: 6px
+    }
+
+    .toast {
+      position: fixed;
+      right: 25px;
+      bottom: 25px;
+      z-index: 100;
+      padding: 13px 16px;
+      border: 1px solid var(--line2);
+      border-radius: 12px;
+      background: #101b2c;
+      box-shadow: var(--shadow);
+      font-size: .75rem;
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s
+    }
+
+    .toast.show {
+      transform: none;
+      opacity: 1
+    }
+
+    .login-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: radial-gradient(circle at 50% 0, rgba(76, 141, 255, .15), transparent 35%), #050812;
+      display: grid;
+      place-items: center;
+      padding: 20px
+    }
+
+    .login-card {
+      width: min(430px, 100%);
+      padding: 34px;
+      border: 1px solid var(--line2);
+      background: rgba(10, 17, 30, .94);
+      border-radius: 22px;
+      box-shadow: var(--shadow)
+    }
+
+    .login-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px
+    }
+
+    .login-card h1 {
+      font: 700 1.55rem 'Space Grotesk';
+      margin: 0
+    }
+
+    .login-card p {
+      color: var(--muted);
+      font-size: .75rem;
+      line-height: 1.6
+    }
+
+    .login-card input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: #060b14;
+      color: #fff;
+      border-radius: 11px;
+      margin: 12px 0;
+      outline: none
+    }
+
+    .login-card input:focus {
+      border-color: var(--blue)
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 13px;
+      border: 0;
+      border-radius: 11px;
+      background: linear-gradient(100deg, var(--blue), var(--cyan));
+      font-weight: 800;
+      color: #041019
+    }
+
+    .login-error {
+      color: #ff8797;
+      font-size: .7rem
+    }
+
+    .mobile-menu {
+      display: none
+    }
+
+    @media(max-width:1050px) {
+      .shell {
+        grid-template-columns: 82px 1fr
+      }
+
+      .sidebar {
+        width: 82px;
+        padding: 20px 10px
+      }
+
+      .brand {
+        justify-content: center;
+        padding-bottom: 24px
+      }
+
+      .brand>div:last-child,
+      .nav-title,
+      .side-nav button span,
+      .system {
+        display: none
+      }
+
+      .side-nav button {
+        justify-content: center;
+        padding: 13px
+      }
+
+      .main {
+        grid-column: 2;
+        padding: 0 20px 40px
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .grid2 {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:700px) {
+      .shell {
+        display: block
+      }
+
+      .sidebar {
+        display: none
+      }
+
+      .main {
+        padding: 0 13px 30px
+      }
+
+      .topbar {
+        height: 68px
+      }
+
+      .mobile-menu {
+        display: block
+      }
+
+      .page-head {
+        padding: 24px 0 18px;
+        align-items: start
+      }
+
+      .head-right {
+        display: none
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px
+      }
+
+      .stat {
+        padding: 14px
+      }
+
+      .stat-num {
+        font-size: 1.35rem
+      }
+
+      .toolbar {
+        width: 100%
+      }
+
+      .search {
+        width: 100%
+      }
+
+      .card-head {
+        align-items: flex-start;
+        flex-direction: column
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr
+      }
+
+      .full {
+        grid-column: auto
+      }
+
+      .projects {
+        grid-template-columns: 1fr;
+        padding: 13px
+      }
+
+      .profile {
+        display: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-grid"></div>
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="brand-mark">IS</div>
+        <div>
+          <h1>Innovexa Command</h1><small style="color:var(--muted)">Operations & Client Management</small>
+        </div>
+      </div>
+      <p>Secure admin access for managing client bookings, payments and the projects displayed on the Innovexa website.
+      </p>
+      <input id="apiKeyInput" type="password" placeholder="Enter admin API key" autocomplete="current-password">
+      <div id="loginError" class="login-error" hidden>Access denied. Check your API key and try again.</div>
+      <button id="loginBtn" class="login-btn">Access Command Center →</button>
+    </div>
+  </div>
+  <div class="shell" id="app" hidden>
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">IS</div>
+        <div><strong>INNOVEXA</strong><small>COMMAND CENTER</small></div>
+      </div>
+      <div class="nav-title">Workspace</div>
+      <div class="side-nav">
+        <button class="active" data-view="overview"><i class="ico">⌂</i><span>Overview</span></button>
+        <button data-view="bookings"><i class="ico">◫</i><span>Bookings</span></button>
+        <button data-view="projects"><i class="ico">▣</i><span>Projects</span></button>
+      </div>
+      <div class="nav-title" style="margin-top:25px">System</div>
+      <div class="side-nav"><button id="logoutSide"><i class="ico">↪</i><span>Log out</span></button></div>
+      <div class="side-bottom">
+        <div class="system"><span class="dot"></span><small>API connection active</small></div>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="crumb">Innovexa / <b id="crumbText">Overview</b></div>
+        <div class="top-actions"><button class="refresh-btn" id="refreshBtn">↻ Refresh</button><button
+            class="profile"><span class="avatar">AD</span> Administrator</button><button class="icon-btn mobile-menu"
+            id="mobileNav">☰</button></div>
+      </header>
+      <div class="page-head">
+        <div>
+          <h1 id="pageTitle">Good morning, Admin.</h1>
+          <p id="pageSubtitle">Here's what's happening across your client pipeline today.</p>
+        </div>
+        <div class="head-right">
+          <div class="live">● LIVE SYSTEM</div>
+          <div class="updated">Last sync: <span id="lastSync">—</span></div>
+        </div>
+      </div>
+
+      <section class="view active" id="overviewView">
+        <div class="stats" id="overviewStats"></div>
+        <div class="grid2">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2>Booking pipeline</h2>
+                <p>Live status distribution from your client requests</p>
+              </div><button class="btn" data-go="bookings">View all bookings →</button>
+            </div>
+            <div class="panel-body" id="pipeline"></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2>Recent activity</h2>
+                <p>Latest activity in your workspace</p>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="activity" id="activity"></div>
+            </div>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2>Services demand</h2>
+                <p>Which Innovexa services clients are requesting</p>
+              </div>
+            </div>
+            <div class="panel-body" id="serviceDemand"></div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h2>Quick actions</h2>
+                <p>Common admin tasks</p>
+              </div>
+            </div>
+            <div class="panel-body" style="display:grid;gap:9px"><button class="btn primary" data-go="bookings">Review
+                pending bookings</button><button class="btn" data-go="projects">Manage website portfolio</button><button
+                class="btn" id="copySite">Copy website URL</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="bookingsView">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Client bookings</h2>
+              <p>Approve requests, manage payment status and complete projects.</p>
+            </div>
+            <div class="toolbar"><input id="bookingSearch" class="search"
+                placeholder="Search client, service or ID…"><select id="statusFilter" class="select">
+                <option value="all">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
+              </select></div>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Service</th>
+                  <th>Schedule</th>
+                  <th>Status</th>
+                  <th>Amount</th>
+                  <th>Payment</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="bookingsBody"></tbody>
+            </table>
+          </div>
+          <div class="empty" id="emptyBookings" hidden><strong>No bookings found</strong>Try changing your filters or
+            wait for the next client request.</div>
+        </div>
+      </section>
+
+      <section class="view" id="projectsView">
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head">
+            <div>
+              <h2>Portfolio manager</h2>
+              <p>Control the projects displayed in the public “Our Work” section.</p>
+            </div><button class="btn primary" id="focusProjectForm">+ Add project</button>
+          </div>
+          <div class="form-card" id="projectForm">
+            <div class="form-grid">
+              <div class="field"><label>Project title</label><input id="pTitle" placeholder="e.g. E-Commerce Platform">
+              </div>
+              <div class="field"><label>Category</label><input id="pCategory" placeholder="e.g. Web Development"></div>
+              <div class="field full"><label>Description</label><textarea id="pDescription"
+                  placeholder="Describe the project in one or two strong sentences…"></textarea></div>
+              <div class="field"><label>Image URL</label><input id="pImage" placeholder="https://…"></div>
+              <div class="field"><label>Project URL</label><input id="pLink" placeholder="https://…"></div>
+            </div><label class="check"><input type="checkbox" id="pPublished" checked> Publish this project on the
+              website immediately</label><button class="btn primary" id="addProjectBtn">Publish project →</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>All projects</h2>
+              <p>Published and unpublished portfolio entries.</p>
+            </div><span class="sub" id="projectCount"></span>
+          </div>
+          <div class="projects" id="projectCards"></div>
+          <div class="empty" id="emptyProjects" hidden><strong>No projects yet</strong>Add your first case study above.
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div id="toast" class="toast"></div>
+  <script>
+    const API_BASE = window.location.origin; let apiKey = sessionStorage.getItem('innovexa_admin_key') || ''; let bookings = []; let projects = []; let currentView = 'overview';
+    const $ = id => document.getElementById(id); const esc = v => String(v ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+    function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(window._toast); window._toast = setTimeout(() => t.classList.remove('show'), 2400) }
+    async function authedFetch(url, opts = {}) { opts.headers = Object.assign({}, opts.headers, { 'x-api-key': apiKey }); const r = await fetch(url, opts); if (r.status === 401) throw new Error('Unauthorized'); if (!r.ok) throw new Error('Request failed'); return r }
+    function showView(view) { currentView = view; document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); $(view + 'View').classList.add('active'); document.querySelectorAll('.side-nav button[data-view]').forEach(b => b.classList.toggle('active', b.dataset.view === view)); $('crumbText').textContent = view[0].toUpperCase() + view.slice(1); $('pageTitle').textContent = view === 'overview' ? 'Good morning, Admin.' : view === 'bookings' ? 'Client bookings' : 'Portfolio manager'; $('pageSubtitle').textContent = view === 'overview' ? 'Here\'s what\'s happening across your client pipeline today.' : view === 'bookings' ? 'Review leads, approve projects and track payments in one place.' : 'Manage the work your visitors see on the Innovexa website.'; if (view === 'bookings') renderBookings(); if (view === 'projects') renderProjects(); window.scrollTo({ top: 0, behavior: 'smooth' }) }
+    document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => showView(b.dataset.view))); document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => showView(b.dataset.go)));
+    async function loadDashboard() { try { const [br, pr] = await Promise.all([authedFetch(API_BASE + '/api/bookings'), authedFetch(API_BASE + '/api/projects/all')]); const bd = await br.json(), pd = await pr.json(); bookings = bd.bookings || []; projects = pd.projects || []; $('loginScreen').style.display = 'none'; $('app').hidden = false; $('loginError').hidden = true; $('lastSync').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); renderOverview(); renderBookings(); renderProjects() } catch (e) { sessionStorage.removeItem('innovexa_admin_key'); apiKey = ''; $('loginError').hidden = false; $('loginScreen').style.display = 'grid'; $('app').hidden = true } }
+    $('loginBtn').addEventListener('click', () => { apiKey = $('apiKeyInput').value.trim(); if (!apiKey) return; $('loginBtn').disabled = true; loadDashboard().finally(() => $('loginBtn').disabled = false) }); $('apiKeyInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginBtn').click() }); $('logoutSide').addEventListener('click', () => { sessionStorage.removeItem('innovexa_admin_key'); location.reload() }); $('refreshBtn').addEventListener('click', () => { toast('Refreshing workspace…'); loadDashboard() });
+    function renderOverview() {
+      const total = bookings.length, pending = bookings.filter(b => b.status === 'pending').length, approved = bookings.filter(b => b.status === 'approved').length, paid = bookings.filter(b => b.payment_status === 'paid').length, revenue = bookings.filter(b => b.payment_status === 'paid').reduce((s, b) => s + (Number(b.amount) || 0), 0), active = approved + pending; const cards = [['Total bookings', total, 'All client requests', '◫'], ['Needs review', pending, pending ? 'Action required' : 'Inbox clear', '!'], ['Active projects', active, 'Pending + approved', '↗'], ['Revenue collected', 'Rs. ' + revenue.toLocaleString(), 'Confirmed paid bookings', '₨']]; $('overviewStats').innerHTML = cards.map((c, i) => `<div class="stat"><div class="stat-top"><span>${c[0]}</span><span class="stat-icon">${c[3]}</span></div><div class="stat-num">${c[1]}</div><div class="stat-foot ${i === 1 && pending ? '' : 'green'}">${c[2]}</div></div>`).join('');
+      const statuses = ['pending', 'approved', 'completed', 'rejected']; $('pipeline').innerHTML = statuses.map(s => { const n = bookings.filter(b => b.status === s).length, p = total ? Math.round(n / total * 100) : 0; return `<div class="bar-row"><div class="bar-label"><span>${s}</span><span>${n} · ${p}%</span></div><div class="bar"><i style="width:${p}%"></i></div></div>` }).join('') || '<div class="empty">No booking data yet.</div>';
+      const serviceMap = {}; bookings.forEach(b => { serviceMap[b.service] = (serviceMap[b.service] || 0) + 1 }); const services = Object.entries(serviceMap).sort((a, b) => b[1] - a[1]).slice(0, 6), max = services[0]?.[1] || 1; $('serviceDemand').innerHTML = services.length ? services.map(([s, n]) => `<div class="bar-row"><div class="bar-label"><span>${esc(s)}</span><span>${n}</span></div><div class="bar"><i style="width:${Math.round(n / max * 100)}%"></i></div></div>`).join('') : '<div class="empty">Service demand will appear here.</div>';
+      const recent = [...bookings].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)).slice(0, 5); $('activity').innerHTML = recent.length ? recent.map(b => `<div class="activity-item"><i class="activity-dot"></i><div><strong>${esc(b.name || 'Client')} requested ${esc(b.service || 'a service')}</strong><p>${esc(b.date || 'Date not set')} · <span class="badge ${esc(b.status || 'pending')}">${esc(b.status || 'pending')}</span></p><time>${b.created_at ? new Date(b.created_at).toLocaleString() : 'Recent request'}</time></div></div>`).join('') : '<div class="empty">No recent activity.</div>'
+    }
+    function renderBookings() { const q = ($('bookingSearch')?.value || '').toLowerCase(), filter = $('statusFilter')?.value || 'all'; const list = bookings.filter(b => (filter === 'all' || b.status === filter) && JSON.stringify(b).toLowerCase().includes(q)); $('emptyBookings').hidden = !!list.length; const body = $('bookingsBody'); body.innerHTML = list.map(b => { const initials = (b.name || 'C').split(' ').map(x => x[0]).slice(0, 2).join('').toUpperCase(); let acts = ''; if (b.status === 'pending') acts += `<button class="btn primary" data-approve="${b.id}">Approve</button><button class="btn danger" data-reject="${b.id}">Reject</button>`; if (b.status === 'approved') { const link = b.payment_token ? `${API_BASE}/payment.html?id=${b.id}&token=${b.payment_token}` : ''; if (link) acts += `<button class="btn" data-copy="${esc(link)}">Pay link</button>`; if (b.payment_status === 'submitted') acts += `<button class="btn primary" data-confirm="${b.id}">Confirm payment</button>`; if (b.payment_status === 'paid') acts += `<button class="btn" data-complete="${b.id}">Complete</button>` } acts += `<button class="btn danger" data-delete="${b.id}">Delete</button>`; return `<tr><td><div class="client"><div class="client-avatar">${initials}</div><div><strong>${esc(b.name)}</strong><small>${esc(b.phone)}${b.email ? ' · ' + esc(b.email) : ''}</small></div></div></td><td><span class="service">${esc(b.service)}</span></td><td>${esc(b.date)}<span class="sub">${esc(b.time)}</span></td><td><span class="badge ${esc(b.status)}">${esc(b.status)}</span></td><td>${b.amount ? 'Rs. ' + Number(b.amount).toLocaleString() : '—'}</td><td><span class="badge ${esc(b.payment_status)}">${esc(b.payment_status)}</span>${b.payment_reference ? `<span class="sub">${esc(b.payment_method)} · ${esc(b.payment_reference)}</span>` : ''}</td><td><div class="actions">${acts}</div></td></tr>` }).join(''); attachBookingActions() }
+    $('bookingSearch').addEventListener('input', renderBookings); $('statusFilter').addEventListener('change', renderBookings);
+    function attachBookingActions() { document.querySelectorAll('[data-approve]').forEach(b => b.onclick = async () => { const amount = prompt('Enter agreed price in PKR (optional):'); try { await authedFetch(`${API_BASE}/api/bookings/${b.dataset.approve}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'approved', amount: amount || null }) }); toast('Booking approved'); loadDashboard() } catch (e) { toast('Could not approve booking') } }); document.querySelectorAll('[data-reject]').forEach(b => b.onclick = async () => { if (!confirm('Reject this booking?')) return; try { await authedFetch(`${API_BASE}/api/bookings/${b.dataset.reject}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'rejected' }) }); toast('Booking rejected'); loadDashboard() } catch (e) { toast('Action failed') } }); document.querySelectorAll('[data-confirm]').forEach(b => b.onclick = async () => { try { await authedFetch(`${API_BASE}/api/bookings/${b.dataset.confirm}/confirm-payment`, { method: 'PATCH' }); toast('Payment confirmed'); loadDashboard() } catch (e) { toast('Could not confirm payment') } }); document.querySelectorAll('[data-complete]').forEach(b => b.onclick = async () => { try { await authedFetch(`${API_BASE}/api/bookings/${b.dataset.complete}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'completed' }) }); toast('Project marked completed'); loadDashboard() } catch (e) { toast('Action failed') } }); document.querySelectorAll('[data-delete]').forEach(b => b.onclick = async () => { if (!confirm('Delete this booking permanently?')) return; try { await authedFetch(`${API_BASE}/api/bookings/${b.dataset.delete}`, { method: 'DELETE' }); toast('Booking deleted'); loadDashboard() } catch (e) { toast('Could not delete booking') } }); document.querySelectorAll('[data-copy]').forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.copy); toast('Payment link copied') } catch (e) { toast('Copy failed') } }) }
+    function renderProjects() { $('projectCount').textContent = projects.length + ' total'; $('emptyProjects').hidden = !!projects.length; $('projectCards').innerHTML = projects.map(p => `<article class="project"><div class="project-img">${p.image_url ? `<img src="${esc(p.image_url)}" alt="${esc(p.title)}">` : '<div style="height:100%;display:grid;place-items:center;color:#41516a;font-size:2rem">IS</div>'}<span class="project-status badge ${p.published ? 'published' : 'unpaid'}">${p.published ? 'Published' : 'Hidden'}</span></div><div class="project-body"><div class="project-cat">${esc(p.category || 'General')}</div><h3>${esc(p.title)}</h3><p>${esc(p.description || 'No description provided.')}</p><div class="project-actions"><button class="btn" data-toggle="${p.id}" data-published="${p.published}">${p.published ? 'Unpublish' : 'Publish'}</button><button class="btn danger" data-delete-project="${p.id}">Delete</button>${p.link ? `<a class="btn" href="${esc(p.link)}" target="_blank" rel="noopener">Open ↗</a>` : ''}</div></div></article>`).join(''); document.querySelectorAll('[data-toggle]').forEach(b => b.onclick = async () => { try { await authedFetch(`${API_BASE}/api/projects/${b.dataset.toggle}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ published: b.dataset.published !== 'true' }) }); toast(b.dataset.published === 'true' ? 'Project hidden' : 'Project published'); loadDashboard() } catch (e) { toast('Could not update project') } }); document.querySelectorAll('[data-delete-project]').forEach(b => b.onclick = async () => { if (!confirm('Delete this project permanently?')) return; try { await authedFetch(`${API_BASE}/api/projects/${b.dataset.deleteProject}`, { method: 'DELETE' }); toast('Project deleted'); loadDashboard() } catch (e) { toast('Could not delete project') } }) }
+    $('addProjectBtn').addEventListener('click', async () => { const title = $('pTitle').value.trim(); if (!title) { toast('Project title is required'); $('pTitle').focus(); return } const body = { title, category: $('pCategory').value.trim(), description: $('pDescription').value.trim(), image_url: $('pImage').value.trim(), link: $('pLink').value.trim(), published: $('pPublished').checked }; try { await authedFetch(API_BASE + '/api/projects', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });['pTitle', 'pCategory', 'pDescription', 'pImage', 'pLink'].forEach(id => $(id).value = ''); $('pPublished').checked = true; toast('Project published successfully'); loadDashboard() } catch (e) { toast('Could not create project') } }); $('focusProjectForm').onclick = () => { $('projectForm').scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => $('pTitle').focus(), 400) }; $('copySite').onclick = () => { navigator.clipboard.writeText('https://innovexasolutions.pk'); toast('Website URL copied') };
+    if (apiKey) loadDashboard();
+  </script>
+</body>
+
+</html>
